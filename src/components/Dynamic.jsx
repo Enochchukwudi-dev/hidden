@@ -91,12 +91,18 @@ function Dynamic({ product: propProduct }) {
           link.rel = 'preload'
           link.as = 'image'
           link.href = src
+          // hint high priority for preloads
+          try { link.setAttribute('fetchpriority', 'high') } catch (e) { void e }
           document.head.appendChild(link)
           created.push(link)
         }
         // create an Image() in layout phase so the browser starts fetching immediately
         try {
           const im = new Image()
+          im.decoding = 'sync'
+          im.loading = 'eager'
+          // set attribute as some browsers honor it on dynamically created images
+          try { im.setAttribute('fetchpriority', 'high') } catch (e) { void e }
           im.src = src
           preloaders.push(im)
         } catch (err) { void err }
@@ -107,10 +113,14 @@ function Dynamic({ product: propProduct }) {
         mainLink.rel = 'preload'
         mainLink.as = 'image'
         mainLink.href = product.image
+        try { mainLink.setAttribute('fetchpriority', 'high') } catch (e) { void e }
         document.head.appendChild(mainLink)
         created.push(mainLink)
         try {
           const im = new Image()
+          im.decoding = 'sync'
+          im.loading = 'eager'
+          try { im.setAttribute('fetchpriority', 'high') } catch (e) { void e }
           im.src = product.image
           preloaders.push(im)
         } catch (err) { void err }
@@ -285,6 +295,13 @@ function Dynamic({ product: propProduct }) {
                     <img src={src} alt={`${product.title} ${idx + 1}`} loading="eager" decoding="async" fetchPriority="high" width="80" height="80" className={`w-full h-full object-cover`} />
                   </button>
                 ))}
+
+                {/* Offscreen preloader images (force immediate multi-download) */}
+                <div aria-hidden="true" style={{position: 'absolute', left: -9999, top: -9999, width: 1, height: 1, overflow: 'hidden', pointerEvents: 'none'}}>
+                  {thumbImages.map((s, i) => (
+                    <img key={`pre-${i}`} src={s} alt="" loading="eager" decoding="sync" fetchPriority="high" width={1} height={1} style={{width: 1, height: 1}} />
+                  ))}
+                </div>
               </div>
          
             </div>
