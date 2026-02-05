@@ -109,9 +109,9 @@ const Navbar = () => {
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full shadow text-black font-semibold pt-3"
+      className="fixed top-0 left-0 right-0 z-50 w-full  text-black font-semibold pt-3"
       style={{
-        backgroundColor: 'hsl(44, 45%, 93%)',
+        backgroundColor: 'white',
       }}
     >
       <div className="relative max-w-7xl mx-auto px-4 py-6 flex justify-between items-center md:px-20">

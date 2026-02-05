@@ -34,15 +34,15 @@ const Carousel = () => {
       setIndex(i => (i + 1) % slides.length)
     }, 3000)
     return () => clearInterval(id)
-  }, [index, autoplay, slides.length])
+  }, [autoplay, slides.length])
 
   return (
     <div className="w-full overflow-hidden relative mt-5 ">
-      <div className="flex transition-transform duration-1000 md:duration-800 " style={{ transform: `translateX(-${index * 100}%)`, willChange: 'transform' }}>
+      <div className="flex transition-transform duration-700 md:duration-600 ease-in-out" style={{ transform: `translate3d(-${index * 100}%, 0, 0)`, willChange: 'transform' }}>
                 {slides.map((s, i) => (
           <div key={s.id} className="flex-shrink-0 min-w-full">
             <div
-              className={`slide-bg relative w-full px-0 pt-20 md:pt-35 pb-36 md:pb-55 flex flex-col items-center mt-3 text-center bg-transparent transition-transform duration-500 ${i === index ? 'scale-105 shadow-2xl' : ''}`}
+              className={`slide-bg relative w-full px-0 pt-20 md:pt-35 pb-36 md:pb-55 flex flex-col items-center mt-3 text-center bg-transparent transition-transform duration-700 ease-in-out ${i === index ? 'scale-105 shadow-2xl' : ''}`}
               style={{ overflow: 'hidden' }}
             >
               {(() => {
@@ -62,7 +62,7 @@ const Carousel = () => {
                 ) : null
               })()}
 
-              <div className="absolute top-0 left-0 w-full h-59 bg-gradient-to-b from-orange-200/80 to-transparent pointer-events-none z-10" />
+              <div className="absolute top-0 left-0 w-full h-59 bg-gradient-to-b from-blue-200/40 to-transparent pointer-events-none z-10" />
               <div className="mt-30 w-full max-w-xl relative z-20">
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-black font-roboto text-gray-900 tracking-wide uppercase white-text-shadow">
                   {s.title}
@@ -75,7 +75,7 @@ const Carousel = () => {
                   </button>
                 </div>
               </div>
-              <div className="absolute bottom-0 left-0 w-full h-59 bg-gradient-to-t from-orange-200/80 to-transparent pointer-events-none z-10" />
+              <div className="absolute bottom-0 left-0 w-full h-59 bg-gradient-to-t from-blue-200/70 to-transparent pointer-events-none z-10" />
             </div>
           </div>
         ))}

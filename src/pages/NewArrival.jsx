@@ -7,10 +7,10 @@ import soldBadge from '../assets/soldout.png'
 function NewArrival({ limit, className = '', hideTitle = false, product = null }) {
   const cart = useCart()
   const handleAdd = (e, p) => {
-    const card = e.currentTarget.closest('.rounded-lg') || e.currentTarget.parentElement
-    const img = card.querySelector('img')
-    const rect = img ? img.getBoundingClientRect() : null
-    cart.addItem(p, { sourceEl: img, imgSrc: img?.src, imgRect: rect })
+    const card = e.currentTarget.closest('.product-card') || e.currentTarget.closest('.rounded-lg') || e.currentTarget.parentElement
+    const img = card ? (card.querySelector('img[data-product-image]') || card.querySelector('img')) : null
+    const rect = img && img.getBoundingClientRect ? img.getBoundingClientRect() : null
+    cart.addItem(p, { sourceEl: img, imgSrc: img?.src || p.image, imgRect: rect })
   }
 
   const [items, setItems] = useState(() => {
@@ -58,12 +58,12 @@ function NewArrival({ limit, className = '', hideTitle = false, product = null }
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {items.map((p) => (
-          <div key={p.id} className=" rounded-lg  overflow-hidden" style={{
+          <div key={p.id} className="product-card rounded-lg overflow-hidden" style={{
         backgroundColor: 'white',
       }}>
             <div className="h-50 md:h-80 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                 <Link to={`/product/${p.id}`} className="w-full h-full block">
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover" />
+                  <img src={p.image} alt={p.title} data-product-image="true" className="w-full h-full object-cover" />
                 </Link>
                 {p.soldOut && <img src={soldBadge} alt="Sold out" className="absolute top-2 right-2 w-12 h-12 pointer-events-none" />}
               </div>

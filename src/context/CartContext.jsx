@@ -102,6 +102,7 @@ export function CartProvider({ children }) {
       flyer.style.width = srcRect.width + 'px'
       flyer.style.height = srcRect.height + 'px'
       flyer.style.borderRadius = '8px'
+      flyer.style.boxShadow = '0 10px 24px rgba(0,0,0,0.26)'
       flyer.style.pointerEvents = 'none'
       flyer.style.zIndex = 9999
       flyer.style.transformOrigin = 'center center'
@@ -132,8 +133,7 @@ export function CartProvider({ children }) {
 
       // single-step smooth flight to cart (use RAF to ensure transition starts)
       requestAnimationFrame(() => {
-        flyer.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(0.06)`
-        flyer.style.opacity = '0'
+        flyer.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(0.08)`
       })
 
       // cleanup fallback: in case transitionend doesn't fire, remove after duration + small buffer
