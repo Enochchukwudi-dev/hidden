@@ -1,10 +1,11 @@
 import React from "react";
 import Footer from "../pages/Footer";
+import MountReveal from '../components/MountReveal'
 
 const Collections = () => {
   return (
     <>
-      <section className="min-h-screen bg-gray-50 py-16">
+      <MountReveal className="min-h-screen bg-gray-50 py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-10">
             <p className="text-sm text-gray-500">Collections</p>
@@ -18,7 +19,7 @@ const Collections = () => {
             <div className="border border-gray-200 rounded-lg p-6 bg-white">Collection 3 placeholder</div>
           </div>
         </div>
-      </section>
+      </MountReveal>
       <Footer />
     </>
   );

@@ -109,6 +109,21 @@ const Home = () => {
   const dropdownRef = useRef(null)
   const [coords, setCoords] = useState(null)
 
+  // mount animation state (top -> bottom slide in)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    // respect user preference for reduced motion
+    try {
+      if (window && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setMounted(true)
+        return
+      }
+    } catch (err) { /* ignore */ }
+    const raf = requestAnimationFrame(() => setMounted(true))
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
   const onChange = (e) => {
     const v = e.target.value
     setQuery(v)
@@ -187,7 +202,10 @@ const Home = () => {
 
   return (
     <>
-      <section className="min-h-110 pt-7 md:pt-20 -mt-4 " style={{ backgroundColor: 'white' }}>
+      <section
+        className={`min-h-110 pt-7 md:pt-20 -mt-4 transition-transform transition-opacity duration-700 ease-out ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8'}`}
+        style={{ backgroundColor: 'white' }}
+      >
         {/* Hero content moved above the background image */}
         {/* Mobile search (visible on small screens, hidden at md+) */}
         <div className="w-full px-4 sm:px-0 flex justify-center md:hidden mt-2">

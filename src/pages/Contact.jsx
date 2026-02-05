@@ -1,10 +1,11 @@
 
 import Footer from '../pages/Footer'
+import MountReveal from '../components/MountReveal' 
 
 const Contact = () => {
   return (
     <>
-    <section className="py-20 px-6 bg-white mb-40 text-gray-900">
+    <MountReveal className="py-20 px-6 bg-white mb-40 text-gray-900">
       <div className="max-w-4xl mx-auto text-center">
         <p className="text-sm uppercase text-gray-500 mb-3">Tagline</p>
         <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Contact us</h1>
@@ -61,7 +62,7 @@ const Contact = () => {
 
         </div>
       </div>
-    </section>
+    </MountReveal>
     <Footer />
     </>
 

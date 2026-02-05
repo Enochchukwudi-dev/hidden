@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react'
+import React, { useMemo, useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { products } from '../data/products'
 import { useCart } from '../context/CartContext'
@@ -7,6 +7,7 @@ import Footer from '../pages/Footer'
 import leftIcon from '../assets/left.svg'
 import rightIcon from '../assets/right.svg'
 import soldBadge from '../assets/soldout.png'
+import MountReveal from '../components/MountReveal' 
 
 // Product metadata (colors and descriptions)
 const PRODUCT_META = {
@@ -65,6 +66,9 @@ function Dynamic({ product: propProduct }) {
   const [toastMsg, setToastMsg] = useState('')
   const toastTimer = useRef(null)
   const mainImgRef = useRef(null)
+  // temporary added state for visual feedback after add-to-cart
+  const [justAdded, setJustAdded] = useState(false)
+  const addedTimer = useRef(null)
   const [mainSrc, setMainSrc] = useState(product.image)
   const [flipMain, setFlipMain] = useState(false)
   const [selectedThumb, setSelectedThumb] = useState(0)
@@ -73,20 +77,77 @@ function Dynamic({ product: propProduct }) {
   // prepare thumbnails dynamically based on available images
   const _baseImages = product.images || product.gallery || [product.image]
   const thumbImages = _baseImages.length > 0 ? _baseImages : [product.image]
+
+  // insert <link rel="preload" as="image"> tags ASAP so thumbnails and main image are prioritized
+  useLayoutEffect(() => {
+    const created = []
+    const preloaders = []
+    try {
+      const imgs = thumbImages && thumbImages.length ? thumbImages : [product.image]
+      imgs.forEach(src => {
+        if (!src) return
+        if (!document.querySelector(`link[rel="preload"][href="${src}"]`)) {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'image'
+          link.href = src
+          document.head.appendChild(link)
+          created.push(link)
+        }
+        // create an Image() in layout phase so the browser starts fetching immediately
+        try {
+          const im = new Image()
+          im.src = src
+          preloaders.push(im)
+        } catch (err) { void err }
+      })
+
+      if (product.image && !document.querySelector(`link[rel="preload"][href="${product.image}"]`)) {
+        const mainLink = document.createElement('link')
+        mainLink.rel = 'preload'
+        mainLink.as = 'image'
+        mainLink.href = product.image
+        document.head.appendChild(mainLink)
+        created.push(mainLink)
+        try {
+          const im = new Image()
+          im.src = product.image
+          preloaders.push(im)
+        } catch (err) { void err }
+      }
+    } catch (err) { void err }
+
+    return () => {
+      created.forEach(l => { if (l.parentNode) l.parentNode.removeChild(l) })
+      // release references
+      preloaders.forEach(p => { try { p.src = '' } catch (e) {} })
+    }
+  }, [product])
+
   const cart = useCart()
   const navigate = useNavigate()
 
   useEffect(() => {
+    // clear timers when product changes/unmounts
     return () => {
       if (toastTimer.current) clearTimeout(toastTimer.current)
+      if (addedTimer.current) clearTimeout(addedTimer.current)
     }
   }, [product])
 
-  // keep mainSrc in sync when product changes
+  // keep mainSrc in sync when product changes and preload thumbnails
   useEffect(() => {
     setMainSrc(product.image)
     setFlipMain(false)
     setSelectedThumb(0)
+    // preload thumbnails so navigating from listing feels instant
+    const imgs = thumbImages && thumbImages.length ? thumbImages : [product.image]
+    imgs.forEach(src => {
+      try {
+        const img = new Image()
+        img.src = src
+      } catch (err) { void err }
+    })
   }, [product])
 
   const goToIndex = (idx) => {
@@ -138,6 +199,11 @@ function Dynamic({ product: propProduct }) {
     if (cart && cart.addItem) {
       cart.addItem(product, { sourceEl: mainImgRef.current, imgSrc: product.image, qty })
     }
+    // visual feedback: show green "Added" button briefly
+    setJustAdded(true)
+    if (addedTimer.current) clearTimeout(addedTimer.current)
+    addedTimer.current = setTimeout(() => setJustAdded(false), 1500)
+
     setToastMsg('Added to cart')
     setToastVisible(true)
     if (toastTimer.current) clearTimeout(toastTimer.current)
@@ -156,14 +222,14 @@ function Dynamic({ product: propProduct }) {
 
   return (
     <>
-    <div className="min-h-screen bg-white md:pt-25 font-inter text-[#111] px-3">
+    <MountReveal className="min-h-screen bg-white md:pt-25 font-inter text-[#111] px-3">
       {/* Toast */}
       <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${toastVisible ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0'}`} role="status" aria-live="polite">
         <div className="bg-black text-gray-400 px-7 py-2 text-sm rounded-md shadow">{toastMsg}</div>
       </div>
       <div className="lg:max-w-8xl mx-auto lg:px-28 py-10 px-0">
         {/* Back button */}
-        <Link to="/" className="inline-flex items-center gap-3 px-4 py-2 rounded-md border border-gray-200 bg-white/20 text-sm font-semibold shadow-sm">← Back</Link>
+        <Link to="/" className="inline-flex items-center gap-3 px-4 py-2 rounded-md border border-gray-400 bg-black/1 text-sm font-semibold shadow-sm">← Back</Link>
 
         {/* Top area */}
         <div className="mt-7  lg:ml-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 items-start">
@@ -171,11 +237,11 @@ function Dynamic({ product: propProduct }) {
           <div className="md:col-span-1 lg:col-span-1">
             <div className="relative bg-[hsl(44,45%,98%)] p-0 rounded-xl overflow-hidden">
               {/* previous/next controls */}
-              <button onClick={prevImage} aria-label="Previous image" className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-yellow-300/20 rounded-full border border-gray-300 shadow-sm hover:scale-105">
+              <button onClick={prevImage} aria-label="Previous image" className="absolute left-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-blue-300/20 rounded-full border border-gray-300 shadow-sm hover:scale-105">
                 <img src={leftIcon} alt="Previous" className="w-5 h-5" />
               </button>
 
-              <button onClick={nextImage} aria-label="Next image" className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-yellow-300/20 rounded-full border  border-gray-300 shadow-sm hover:scale-105">
+              <button onClick={nextImage} aria-label="Next image" className="absolute right-3 top-1/2 -translate-y-1/2 z-20 p-2 bg-blue-300/20 rounded-full border  border-gray-300 shadow-sm hover:scale-105">
                 <img src={rightIcon} alt="Next" className="w-5 h-5" />
               </button>
 
@@ -183,6 +249,9 @@ function Dynamic({ product: propProduct }) {
                 ref={mainImgRef}
                 src={mainSrc}
                 alt={product.title}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 onError={(e) => {
                   try {
                     if (e.currentTarget.src !== product.image) {
@@ -201,7 +270,7 @@ function Dynamic({ product: propProduct }) {
               )}
 
               {/* Thumbnails: use product.images if present, otherwise show the main image */}
-              <div className="p-3 flex items-center gap-3">
+              <div className="p-3 flex items-center gap-3 bg-white rounded-md">
                 {thumbImages.map((src, idx) => (
                   <button
                     key={idx}
@@ -213,7 +282,7 @@ function Dynamic({ product: propProduct }) {
                     }}
                     className={`${THUMB_CLASS} rounded-md overflow-hidden flex-shrink-0 border ${selectedThumb === idx ? 'ring-2 ring-amber-400 border-transparent' : 'border-gray-100'}`}
                     aria-label={`Show image ${idx + 1}`}>
-                    <img src={src} alt={`${product.title} ${idx + 1}`} className={`w-full h-full object-cover`} />
+                    <img src={src} alt={`${product.title} ${idx + 1}`} loading="eager" decoding="async" fetchPriority="high" width="80" height="80" className={`w-full h-full object-cover`} />
                   </button>
                 ))}
               </div>
@@ -250,13 +319,29 @@ function Dynamic({ product: propProduct }) {
             </div>
 
             <div className="mt-8 flex items-center gap-4">
-              <button
-                onClick={!product.soldOut ? handleAddToCart : undefined}
-                disabled={product.soldOut}
-                className={`${product.soldOut ? 'flex items-center gap-1 bg-gray-300 text-gray-600 px-4 py-3 rounded-md font-semibold shadow-sm cursor-not-allowed' : 'flex items-center gap-1 bg-black text-xs text-white px-4 py-3 rounded-md font-semibold shadow-sm cursor-pointer hover:opacity-95 hover:scale-[1.01] transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400'}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" strokeLinecap="round" strokeLinejoin="round"/><circle cx="9" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></svg>
-                {product.soldOut ? 'SOLD OUT' : 'ADD TO CART'}
-              </button>
+              {(() => {
+                const isAdded = justAdded
+                return (
+                  <button
+                    onClick={!product.soldOut && !isAdded ? handleAddToCart : undefined}
+                    disabled={product.soldOut || isAdded}
+                    className={`${product.soldOut ? 'flex items-center gap-1 bg-gray-300 text-gray-600 px-4 py-3 rounded-md font-semibold shadow-sm cursor-not-allowed' : isAdded ? 'flex items-center gap-2 bg-green-500 text-white px-4 py-3 rounded-md font-semibold shadow-sm cursor-not-allowed' : 'flex items-center gap-1 bg-black text-xs text-white px-4 py-3 rounded-md font-semibold shadow-sm cursor-pointer hover:opacity-95 hover:scale-[1.01] transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-amber-400'}`}>
+                    {product.soldOut ? (
+                      'SOLD OUT'
+                    ) : isAdded ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        <span>Added</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" strokeLinecap="round" strokeLinejoin="round"/><circle cx="9" cy="20" r="1"/><circle cx="20" cy="20" r="1"/></svg>
+                        ADD TO CART
+                      </>
+                    )}
+                  </button>
+                )
+              })()}
 
               {!product.soldOut && (
                 <button onClick={handleBuyNow} className="px-4 py-3 rounded-md border border-black/20 text-xs font-semibold cursor-pointer hover:bg-black hover:text-white transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-amber-200">BUY NOW</button>
@@ -280,7 +365,7 @@ function Dynamic({ product: propProduct }) {
         <NewArrival limit={4} className="mt-6" hideTitle product={product} />
     
       </div>
-    </div>
+    </MountReveal>
     <Footer />
     </>
   )
