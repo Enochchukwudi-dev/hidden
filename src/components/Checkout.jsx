@@ -313,7 +313,7 @@ y = totalY + totalBoxH + 40
 
   return (
     <>
-      <main className="max-w-7xl mx-auto px-6 py-12 md:pt-28" style={{ backgroundColor: 'hsl(44, 45%, 99%)' }}>
+      <main className="max-w-7xl mx-auto px-6 py-12 md:pt-28" style={{ backgroundColor: 'white' }}>
         <header className="text-center mb-8">
           <h1 className="text-3xl font-extrabold">Checkout</h1>
           <p className="mt-3 text-sm text-gray-500">
@@ -427,8 +427,8 @@ y = totalY + totalBoxH + 40
                           className="w-12 h-12 object-cover rounded cursor-pointer hover:scale-105 transition-transform"
                         />
                       </button>
-                      <div className="flex-1 text-sm">
-                        <div className="font-medium">{item.title}</div>
+                      <div className="flex-1 text-xs">
+                        <div className="font-semibold ">{item.title}</div>
                         <div className="flex items-center gap-2 mt-1">
                           <button
                             onClick={() => cart.decrementItem(item.id)}

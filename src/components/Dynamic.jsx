@@ -156,7 +156,7 @@ function Dynamic({ product: propProduct }) {
 
   return (
     <>
-    <div className="min-h-screen bg-[hsl(44,45%,96%)] md:pt-25 font-inter text-[#111] px-3">
+    <div className="min-h-screen bg-white md:pt-25 font-inter text-[#111] px-3">
       {/* Toast */}
       <div className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${toastVisible ? 'translate-y-0 opacity-100' : '-translate-y-6 opacity-0'}`} role="status" aria-live="polite">
         <div className="bg-black text-gray-400 px-7 py-2 text-sm rounded-md shadow">{toastMsg}</div>

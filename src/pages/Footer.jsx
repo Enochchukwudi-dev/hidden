@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logo from '../assets/foot.png'
+import logo from '../assets/blacklogo.jpg'
 import snapchatIcon from '../assets/snapchat.svg'
 import instaIcon from '../assets/insta.svg'
 import tiktokIcon from '../assets/tiktok.svg'
+import eye from '../assets/eye.png' 
+import { MapPinCheck, Mail, Phone, Send } from 'lucide-react' 
 
 const Footer = () => {
   const [showTerms, setShowTerms] = useState(false);
@@ -48,7 +50,7 @@ const Footer = () => {
     }
   };
   return (
-    <footer style={{ backgroundColor: 'hsl(43, 12%, 43%)', fontFamily: "'Montserrat', 'Roboto', sans-serif" }} className="text-gray-100">
+    <footer style={{ backgroundColor: 'black', fontFamily: "'Montserrat', 'Roboto', sans-serif" }} className="text-gray-100">
       <div className="max-w-7xl mx-auto px-8 md:px-10 py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
 
@@ -57,21 +59,21 @@ const Footer = () => {
             <button onClick={() => navigate('/')} aria-label="Go to home" className="p-0 bg-transparent border-0 inline-block">
               <img src={logo} alt="Follow God" className="h-10 md:h-12 lg:15 w-auto mb-6 cursor-pointer" />
             </button>
-            <p className="text-sm text-gray-200 leading-relaxed max-w-sm">
+            <p className="text-sm font-thin text-gray-400 leading-relaxed max-w-sm">
               Faith-inspired fashion for everyday wear, shop curated collections made with care.
             </p>
 
-            <div className="flex items-center gap-3 mt-6">
-              <a href="https://www.instagram.com/followgod.ng" target="_blank" rel="noreferrer" aria-label="Instagram" className="h-9 w-9 rounded-md bg-white/10 flex items-center justify-center hover:scale-105 transition" title="Instagram">
-                <img src={instaIcon} alt="Instagram" className="h-5 w-5" />
+            <div className="flex items-center gap-5 mt-6">
+              <a href="https://www.instagram.com/followgod.ng" target="_blank" rel="noreferrer" aria-label="Instagram" className="h-9 w-9 rounded-md  flex items-center justify-center hover:scale-105 transition" title="Instagram">
+                <img src={instaIcon} alt="Instagram" className="h-8 w-8" />
               </a>
 
-              <a href="https://www.tiktok.com/@intro840?_r=1&_t=ZS-91ziswsgTLx" target="_blank" rel="noreferrer" aria-label="TikTok" className="h-9 w-9 rounded-md bg-white/10 flex items-center justify-center hover:scale-105 transition" title="TikTok">
-                <img src={tiktokIcon} alt="TikTok" className="h-5 w-5" />
+              <a href="https://www.tiktok.com/@intro840?_r=1&_t=ZS-91ziswsgTLx" target="_blank" rel="noreferrer" aria-label="TikTok" className="h-9 w-9 rounded-md bg-white/80 flex items-center justify-center hover:scale-105 transition" title="TikTok">
+                <img src={tiktokIcon} alt="TikTok" className="h-4 w-4" />
               </a>
 
-              <a href="https://www.snapchat.com/add/nnebue2021?share_id=7YnRKIgbTnG3P9AJCCfNVQ&locale=en_001@rg=ngzzzz" target="_blank" rel="noreferrer" aria-label="Snapchat" className="h-9 w-9 rounded-md bg-white/10 flex items-center justify-center hover:scale-105 transition" title="Snapchat">
-                <img src={snapchatIcon} alt="Snapchat" className="h-5 w-5" />
+              <a href="https://www.snapchat.com/add/nnebue2021?share_id=7YnRKIgbTnG3P9AJCCfNVQ&locale=en_001@rg=ngzzzz" target="_blank" rel="noreferrer" aria-label="Snapchat" className="h-9 w-9 rounded-md bg-white/1 flex items-center justify-center hover:scale-105 transition" title="Snapchat">
+                <img src={snapchatIcon} alt="Snapchat" className="h-8 w-8" />
               </a>
             </div>
           </div>
@@ -79,8 +81,8 @@ const Footer = () => {
           {/* Column: Shop */}
           <div className="md:col-span-2">
             <h4 className="text-xs tracking-wider font-semibold text-gray-100 uppercase">SHOP</h4>
-            <ul className="mt-4 space-y-3 text-sm text-gray-300">
-              <li><button onClick={() => navigate('/shop')} className="hover:underline cursor-pointer">All Products</button></li>
+            <ul className="mt-4 space-y-3 text-sm text-gray-400">
+              <li><button onClick={() => navigate('/shop')} className="hover:underline cursor-pointer ">All Products</button></li>
               <li><button onClick={() => navigate('/shop?category=best-sellers')} className="hover:underline cursor-pointer">Best Sellers</button></li>
             </ul>
           </div>
@@ -88,7 +90,7 @@ const Footer = () => {
           {/* Column: Company */}
           <div className="md:col-span-2">
             <h4 className="text-xs tracking-wider font-semibold text-gray-100 uppercase">COMPANY</h4>
-            <ul className="mt-4 space-y-3 text-sm text-gray-300">
+            <ul className="mt-4 space-y-3 text-sm text-gray-400">
               <li><button onClick={() => setShowAbout(true)} className="hover:underline cursor-pointer">About Us</button></li>
             </ul>
           </div>
@@ -96,7 +98,7 @@ const Footer = () => {
           {/* Column: Support */}
           <div className="md:col-span-2">
             <h4 className="text-xs tracking-wider font-semibold text-gray-100 uppercase">SUPPORT</h4>
-            <ul className="mt-4 space-y-3 text-sm text-gray-300">
+            <ul className="mt-4 space-y-3 text-sm text-gray-400">
               <li><button onClick={() => navigate('/faq')} className="hover:underline cursor-pointer">FAQs</button></li>
             </ul>
           </div>
@@ -104,7 +106,7 @@ const Footer = () => {
           {/* Right: Stay in touch + contact */}
           <div className="md:col-span-5 lg:col-span-5 mt-5" >
             <h4 className="text-xs tracking-wider font-semibold text-gray-100 uppercase">STAY IN TOUCH</h4>
-            <p className="text-sm text-gray-300 mt-3">Sign Up For Exclusive Offers And New Drops.</p>
+            <p className="text-xs text-gray-400 mt-3">Sign Up For Exclusive Offers And New Drops.</p>
 
             <form onSubmit={(e) => {
               e.preventDefault()
@@ -140,15 +142,15 @@ const Footer = () => {
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-md py-2 px-4 bg-white/8 placeholder:text-gray-300 outline-none border border-white/10 text-gray-200"
+                  className="w-full rounded-md py-2 px-4 bg-white/8 placeholder:text-gray-600 outline-none border border-white/10 text-gray-200"
                 />
                 {emailError && (
                   <div className="text-sm text-red-400 mt-2">{emailError}</div>
                 )}
               </div>
               <div className="relative inline-flex items-center">
-                <button disabled={isSubscribing} className={`px-6 py-2 rounded-md font-semibold ${isSubscribing ? 'bg-gray-500 text-white' : 'bg-[#0f1b23] text-white'}`}>
-                  {isSubscribing ? 'Subscribing........' : 'Subscribe'}
+                <button disabled={isSubscribing} className={`px-6 py-2 rounded-lg font-light ${isSubscribing ? 'bg-gray-500 text-white' : 'bg-[#0f1b23] text-gray-200'}`}>
+                  {isSubscribing ? 'Subscribing........' : (<><Send className="h-4 w-4 inline-block mr-2" aria-hidden />Subscribe</>)}
                 </button>
                   {showTick && (
                     <div className="ml-3 -mr-8 animate-pulse" aria-hidden>
@@ -164,13 +166,13 @@ const Footer = () => {
                 <div className="mt-3 text-sm text-yellow-400" dangerouslySetInnerHTML={{ __html: thankYouHtml }} />
               )}
 
-            <div className="mt-6 space-y-4 text-sm text-gray-300">
+            <div className="mt-7 space-y-4 text-sm text-gray-400">
               <div className="flex items-center gap-4">
-                <span className="inline-block">📍</span>
+                <MapPinCheck className="h-4 w-4 text-gray-400" aria-hidden />
                 <span>Online Store</span>
               </div>
               <div className="flex items-center gap-4">
-                <span className="inline-block">✉️</span>
+                <Mail className="h-4 w-4 text-gray-400" aria-hidden />
                 <a
                   href="mailto:followgodng01@gmail.com?body=Reaching%20out%20from%20folllowgod%20website"
                   onClick={(e) => {
@@ -183,7 +185,7 @@ const Footer = () => {
                 </a>
               </div>
               <div className="flex items-center gap-4">
-                <span className="inline-block">📞</span>
+                <Phone className="h-4 w-4 text-gray-400" aria-hidden />
                 <a href="tel:+2349031161058" className="hover:underline">+2349031161058</a>
               </div>
             </div>
@@ -359,7 +361,7 @@ const Footer = () => {
         )}
 
       {/* Bottom bar */}
-      <div style={{ backgroundColor: 'hsl(43, 12%, 40%)' }} className="py-6 flex flex-col">
+      <div style={{ backgroundColor: 'black' }} className="py-6 flex flex-col">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-7">
           <div className="flex items-center gap-6 text-sm text-gray-300">
             <button onClick={() => setShowTerms(true)} className="hover:underline">Terms</button>
@@ -367,11 +369,14 @@ const Footer = () => {
             <button onClick={() => setShowReturns(true)} className="hover:underline">Returns</button>
           </div>
 
-          <div className="text-sm text-gray-300">© FOLLOW GOD — 2026</div>
+          <div className="text-sm text-gray-500">© FOLLOW GOD — 2026</div>
 
           <div className="flex items-center gap-4 flex-col ">
-            <div className="text-sm text-gray-300">built with -</div>
-            <div className="text-sm font-semibold text-gray-200">Byund Technologies</div>
+            <div className="text-sm text-gray-400">built with -</div>
+            <div className="text-sm font-semibold text-yellow-50 flex items-center">
+              <img src={eye} alt="Byund" className="h-4 w-4 inline-block mr-2" />
+              Byund Technologies
+            </div>
             <a
               href="https://wa.me/2349162919586?text=Hello%20Enoch%2C%20Reaching%20out%20from%20followgod%20web"
               target="_blank"

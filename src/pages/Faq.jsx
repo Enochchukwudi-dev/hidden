@@ -28,7 +28,7 @@ const Faq = () => {
   return (
     <>
       <section className="min-h-screen  py-16 md:py-24"     style={{
-        backgroundColor: 'hsl(44, 45%, 94%)',
+        backgroundColor: 'white',
       }}>
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
