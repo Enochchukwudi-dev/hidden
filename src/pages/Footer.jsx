@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logo from '../assets/blacklogo.jpg'
-import snapchatIcon from '../assets/snapchat.svg'
+// use best avif for logo
+const logo = '/images/blacklogo-480.avif'
+import snapchatIcon from '../assets/snapchat.svg' 
 import instaIcon from '../assets/insta.svg'
 import tiktokIcon from '../assets/tiktok.svg'
 import eye from '../assets/eye.png' 
